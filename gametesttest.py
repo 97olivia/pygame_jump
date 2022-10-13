@@ -1,9 +1,6 @@
 import pygame
 from sys import exit
 from random import randint, choice
-import pickle
-
-#TEST TJENATJENA
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -80,14 +77,12 @@ class Obstacle(pygame.sprite.Sprite):
             self.kill()
 
 
-
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
     score_surf = test_font.render(f'Score: {current_time}',False,(64,64,64))
     score_rect = score_surf.get_rect(center = (400,50))
     screen.blit(score_surf,score_rect)
     return current_time
-    
 
 def obstacle_movement(obstacle_list):
     if obstacle_list:
@@ -126,49 +121,20 @@ def player_animation():
         if player_index >= len(player_walk):player_index = 0
         player_surf = player_walk[int(player_index)]
 
-#KAN MAN ANVÄNDA DENNA MEN MED ATT POÄNGEN STANNAR?? SPARAR FEL..
 
-# load the previous score if it exists
-try:
-    with open('score.dat', 'rb') as file:
-        score = pickle.load(file)
-except:
-    score = 0
-
-print ("High score: %d" % score)
-
-# your game code goes here
-# let's say the user scores a new high-score of 10
-score = 10
-
-# save the score
-with open('score.dat', 'wb') as file:
-    pickle.dump(score, file)
-
-#HAR ÄVEN TESTAT MED EN DEF OCH EN ANNAN TXT FIL, MEN VILLE EJ FUNKA
+file_score = open('highscore.txt', 'a')
 
 
 
-#ELLER ÄR EN LIST BÄTTRE? LOOPAR DOCK OCH SPARAR FEL
-
-"""
-Show how to use exceptions to save a high score for a game.
- 
-Sample Python/Pygame Programs
-Simpson College Computer Science
-http://programarcadegames.com/
-http://simpson.edu/computer-science/
-"""
- 
- 
+'''
 def get_high_score():
     # Default high score
     high_score = 0
  
     # Try to read the high score from a file
     try:
-        high_score_file = open("high_score.txt", "r")
-        high_score = int(high_score_file.read())
+        high_score_file = open("high_score.txt", "a+")
+        display_score = int(high_score_file.read())
         high_score_file.close()
         print("The high score is", high_score)
     except IOError:
@@ -190,33 +156,7 @@ def save_high_score(new_high_score):
     except IOError:
         # Hm, can't write it.
         print("Unable to save the high score.")
- 
- 
-def main():
-    """ Main program is here. """
-    # Get the high score
-    high_score = get_high_score()
- 
-    # Get the score from the current game
-    current_score = 0
-    try:
-        # Ask the user for his/her score
-        current_score = int(input("What is your score? "))
-    except ValueError:
-        # Error, can't turn what they typed into a number
-        print("I don't understand what you typed.")
- 
-    # See if we have a new high score
-    if current_score > high_score:
-        # We do! Save to disk
-        print("Yea! New high score!")
-        save_high_score(current_score)
-    else:
-        print("Better luck next time.")
- 
-# Call the main function, start up the game
-if __name__ == "__main__":
-    main()
+'''
 
 
 
@@ -230,12 +170,6 @@ start_time = 0
 score = 0
 bg_music = pygame.mixer.Sound('audio/music.wav')
 bg_music.play(loops = -1)
-
-#HIGH SCORE LISTA
-high_score_list = []
-high_score_list.extend([display_score])
-
-
 
 #Grupper
 player = pygame.sprite.GroupSingle()
@@ -289,8 +223,6 @@ pygame.time.set_timer(snail_animation_timer,500)
 #Flug Timer
 fly_animation_timer = pygame.USEREVENT + 3
 pygame.time.set_timer(fly_animation_timer,200)
-
-
 
 while True:
     for event in pygame.event.get():
@@ -349,9 +281,7 @@ while True:
         score_massage = test_font.render(f'Your Score: {score}',False,(111,196,169))
         score_massage_rect = score_massage.get_rect(center = (400,330))
         screen.blit(game_name,game_name_rect)
-        print(*high_score_list, sep = "\n")
-
-
+        
         if score == 0: screen.blit(game_message,game_message_rect)
         else: screen.blit(score_massage,score_massage_rect)
     
